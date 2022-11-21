@@ -1,0 +1,951 @@
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated
+with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # module.google_artifact_registry.google_artifact_registry_repository.nle-repo will be created
+  + resource "google_artifact_registry_repository" "nle-repo" {
+      + create_time   = (known after apply)
+      + description   = "Docker repository for NLE GCP Prototpye Data Lake"
+      + format        = "DOCKER"
+      + id            = (known after apply)
+      + location      = "europe-west2"
+      + name          = (known after apply)
+      + project       = "playpen-7q9hns"
+      + repository_id = "nle-repo"
+      + update_time   = (known after apply)
+    }
+
+  # module.google_eventarc_gcsnotif.data.google_storage_project_service_account.gcs_account will be read during apply
+  # (config refers to values not yet known)
+ <= data "google_storage_project_service_account" "gcs_account"  {
+      + email_address = (known after apply)
+      + id            = (known after apply)
+      + member        = (known after apply)
+      + project       = (known after apply)
+    }
+
+  # module.google_eventarc_gcsnotif.google_pubsub_subscription.demo-test-sub-landing will be created
+  + resource "google_pubsub_subscription" "demo-test-sub-landing" {
+      + ack_deadline_seconds         = 10
+      + enable_exactly_once_delivery = false
+      + enable_message_ordering      = false
+      + id                           = (known after apply)
+      + message_retention_duration   = "87000s"
+      + name                         = "demo-test-sub-landing"
+      + project                      = "playpen-7q9hns"
+      + retain_acked_messages        = false
+      + topic                        = "gcs-notif-topic"
+
+      + expiration_policy {
+          + ttl = "2678400s"
+        }
+    }
+
+  # module.google_eventarc_gcsnotif.google_pubsub_topic.topic will be created
+  + resource "google_pubsub_topic" "topic" {
+      + id      = (known after apply)
+      + name    = "gcs-notif-topic"
+      + project = (known after apply)
+
+      + message_storage_policy {
+          + allowed_persistence_regions = (known after apply)
+        }
+
+      + schema_settings {
+          + encoding = (known after apply)
+          + schema   = (known after apply)
+        }
+    }
+
+  # module.google_eventarc_gcsnotif.google_pubsub_topic_iam_binding.binding will be created
+  + resource "google_pubsub_topic_iam_binding" "binding" {
+      + etag    = (known after apply)
+      + id      = (known after apply)
+      + members = (known after apply)
+      + project = (known after apply)
+      + role    = "roles/pubsub.publisher"
+      + topic   = (known after apply)
+    }
+
+  # module.google_eventarc_gcsnotif.google_storage_notification.notification will be created
+  + resource "google_storage_notification" "notification" {
+      + bucket          = "datalake-ingest-landing"
+      + id              = (known after apply)
+      + notification_id = (known after apply)
+      + payload_format  = "JSON_API_V1"
+      + self_link       = (known after apply)
+      + topic           = (known after apply)
+    }
+
+  # module.google_gke_gen.google_container_cluster.non-gpu-gke-cluster will be created
+  + resource "google_container_cluster" "non-gpu-gke-cluster" {
+      + cluster_ipv4_cidr           = (known after apply)
+      + datapath_provider           = (known after apply)
+      + default_max_pods_per_node   = (known after apply)
+      + enable_binary_authorization = false
+      + enable_intranode_visibility = (known after apply)
+      + enable_kubernetes_alpha     = false
+      + enable_legacy_abac          = false
+      + enable_shielded_nodes       = true
+      + endpoint                    = (known after apply)
+      + id                          = (known after apply)
+      + initial_node_count          = 1
+      + label_fingerprint           = (known after apply)
+      + location                    = "europe-west2-a"
+      + logging_service             = (known after apply)
+      + master_version              = (known after apply)
+      + min_master_version          = "1.22.12-gke.2300"
+      + monitoring_service          = (known after apply)
+      + name                        = "ingest-cluster-0"
+      + network                     = "nle-netwrk-0"
+      + networking_mode             = (known after apply)
+      + node_locations              = (known after apply)
+      + node_version                = (known after apply)
+      + operation                   = (known after apply)
+      + private_ipv6_google_access  = (known after apply)
+      + project                     = "playpen-7q9hns"
+      + remove_default_node_pool    = true
+      + self_link                   = (known after apply)
+      + services_ipv4_cidr          = (known after apply)
+      + subnetwork                  = "ingest-subnet-0"
+      + tpu_ipv4_cidr_block         = (known after apply)
+
+      + addons_config {
+          + cloudrun_config {
+              + disabled           = (known after apply)
+              + load_balancer_type = (known after apply)
+            }
+
+          + dns_cache_config {
+              + enabled = (known after apply)
+            }
+
+          + gce_persistent_disk_csi_driver_config {
+              + enabled = (known after apply)
+            }
+
+          + gcp_filestore_csi_driver_config {
+              + enabled = (known after apply)
+            }
+
+          + horizontal_pod_autoscaling {
+              + disabled = (known after apply)
+            }
+
+          + http_load_balancing {
+              + disabled = (known after apply)
+            }
+
+          + network_policy_config {
+              + disabled = (known after apply)
+            }
+        }
+
+      + authenticator_groups_config {
+          + security_group = (known after apply)
+        }
+
+      + cluster_autoscaling {
+          + enabled = (known after apply)
+
+          + auto_provisioning_defaults {
+              + boot_disk_kms_key = (known after apply)
+              + image_type        = (known after apply)
+              + oauth_scopes      = (known after apply)
+              + service_account   = (known after apply)
+            }
+
+          + resource_limits {
+              + maximum       = (known after apply)
+              + minimum       = (known after apply)
+              + resource_type = (known after apply)
+            }
+        }
+
+      + confidential_nodes {
+          + enabled = (known after apply)
+        }
+
+      + database_encryption {
+          + key_name = (known after apply)
+          + state    = (known after apply)
+        }
+
+      + default_snat_status {
+          + disabled = (known after apply)
+        }
+
+      + ip_allocation_policy {
+          + cluster_ipv4_cidr_block       = (known after apply)
+          + cluster_secondary_range_name  = (known after apply)
+          + services_ipv4_cidr_block      = (known after apply)
+          + services_secondary_range_name = (known after apply)
+        }
+
+      + logging_config {
+          + enable_components = (known after apply)
+        }
+
+      + master_auth {
+          + client_certificate     = (known after apply)
+          + client_key             = (sensitive value)
+          + cluster_ca_certificate = (known after apply)
+
+          + client_certificate_config {
+              + issue_client_certificate = (known after apply)
+            }
+        }
+
+      + mesh_certificates {
+          + enable_certificates = (known after apply)
+        }
+
+      + monitoring_config {
+          + enable_components = (known after apply)
+        }
+
+      + node_config {
+          + boot_disk_kms_key = (known after apply)
+          + disk_size_gb      = (known after apply)
+          + disk_type         = (known after apply)
+          + guest_accelerator = (known after apply)
+          + image_type        = (known after apply)
+          + labels            = (known after apply)
+          + local_ssd_count   = (known after apply)
+          + machine_type      = (known after apply)
+          + metadata          = (known after apply)
+          + min_cpu_platform  = (known after apply)
+          + node_group        = (known after apply)
+          + oauth_scopes      = (known after apply)
+          + preemptible       = (known after apply)
+          + service_account   = (known after apply)
+          + spot              = (known after apply)
+          + tags              = (known after apply)
+          + taint             = (known after apply)
+
+          + gcfs_config {
+              + enabled = (known after apply)
+            }
+
+          + gvnic {
+              + enabled = (known after apply)
+            }
+
+          + reservation_affinity {
+              + consume_reservation_type = (known after apply)
+              + key                      = (known after apply)
+              + values                   = (known after apply)
+            }
+
+          + shielded_instance_config {
+              + enable_integrity_monitoring = (known after apply)
+              + enable_secure_boot          = (known after apply)
+            }
+
+          + workload_metadata_config {
+              + mode = (known after apply)
+            }
+        }
+
+      + node_pool {
+          + initial_node_count          = (known after apply)
+          + instance_group_urls         = (known after apply)
+          + managed_instance_group_urls = (known after apply)
+          + max_pods_per_node           = (known after apply)
+          + name                        = (known after apply)
+          + name_prefix                 = (known after apply)
+          + node_count                  = (known after apply)
+          + node_locations              = (known after apply)
+          + version                     = (known after apply)
+
+          + autoscaling {
+              + location_policy      = (known after apply)
+              + max_node_count       = (known after apply)
+              + min_node_count       = (known after apply)
+              + total_max_node_count = (known after apply)
+              + total_min_node_count = (known after apply)
+            }
+
+          + management {
+              + auto_repair  = (known after apply)
+              + auto_upgrade = (known after apply)
+            }
+
+          + node_config {
+              + boot_disk_kms_key = (known after apply)
+              + disk_size_gb      = (known after apply)
+              + disk_type         = (known after apply)
+              + guest_accelerator = (known after apply)
+              + image_type        = (known after apply)
+              + labels            = (known after apply)
+              + local_ssd_count   = (known after apply)
+              + machine_type      = (known after apply)
+              + metadata          = (known after apply)
+              + min_cpu_platform  = (known after apply)
+              + node_group        = (known after apply)
+              + oauth_scopes      = (known after apply)
+              + preemptible       = (known after apply)
+              + service_account   = (known after apply)
+              + spot              = (known after apply)
+              + tags              = (known after apply)
+              + taint             = (known after apply)
+
+              + gcfs_config {
+                  + enabled = (known after apply)
+                }
+
+              + gvnic {
+                  + enabled = (known after apply)
+                }
+
+              + reservation_affinity {
+                  + consume_reservation_type = (known after apply)
+                  + key                      = (known after apply)
+                  + values                   = (known after apply)
+                }
+
+              + shielded_instance_config {
+                  + enable_integrity_monitoring = (known after apply)
+                  + enable_secure_boot          = (known after apply)
+                }
+
+              + workload_metadata_config {
+                  + mode = (known after apply)
+                }
+            }
+
+          + upgrade_settings {
+              + max_surge       = (known after apply)
+              + max_unavailable = (known after apply)
+            }
+        }
+
+      + notification_config {
+          + pubsub {
+              + enabled = (known after apply)
+              + topic   = (known after apply)
+            }
+        }
+
+      + private_cluster_config {
+          + enable_private_nodes   = true
+          + master_ipv4_cidr_block = "172.16.0.0/28"
+          + peering_name           = (known after apply)
+          + private_endpoint       = (known after apply)
+          + public_endpoint        = (known after apply)
+
+          + master_global_access_config {
+              + enabled = (known after apply)
+            }
+        }
+
+      + release_channel {
+          + channel = (known after apply)
+        }
+
+      + service_external_ips_config {
+          + enabled = (known after apply)
+        }
+
+      + vertical_pod_autoscaling {
+          + enabled = (known after apply)
+        }
+
+      + workload_identity_config {
+          + workload_pool = (known after apply)
+        }
+    }
+
+  # module.google_gke_gen.google_container_node_pool.non-gpu-node-pool will be created
+  + resource "google_container_node_pool" "non-gpu-node-pool" {
+      + cluster                     = "ingest-cluster-0"
+      + id                          = (known after apply)
+      + initial_node_count          = (known after apply)
+      + instance_group_urls         = (known after apply)
+      + location                    = "europe-west2-a"
+      + managed_instance_group_urls = (known after apply)
+      + max_pods_per_node           = (known after apply)
+      + name                        = "ingest-node-0"
+      + name_prefix                 = (known after apply)
+      + node_count                  = 1
+      + node_locations              = (known after apply)
+      + operation                   = (known after apply)
+      + project                     = (known after apply)
+      + version                     = (known after apply)
+
+      + management {
+          + auto_repair  = (known after apply)
+          + auto_upgrade = (known after apply)
+        }
+
+      + node_config {
+          + disk_size_gb      = (known after apply)
+          + disk_type         = (known after apply)
+          + guest_accelerator = (known after apply)
+          + image_type        = (known after apply)
+          + labels            = (known after apply)
+          + local_ssd_count   = (known after apply)
+          + machine_type      = "e2-medium"
+          + metadata          = (known after apply)
+          + min_cpu_platform  = (known after apply)
+          + oauth_scopes      = [
+              + "https://www.googleapis.com/auth/cloud-platform",
+            ]
+          + preemptible       = true
+          + service_account   = (known after apply)
+          + spot              = false
+          + taint             = (known after apply)
+
+          + shielded_instance_config {
+              + enable_integrity_monitoring = (known after apply)
+              + enable_secure_boot          = (known after apply)
+            }
+
+          + workload_metadata_config {
+              + mode = (known after apply)
+            }
+        }
+
+      + upgrade_settings {
+          + max_surge       = (known after apply)
+          + max_unavailable = (known after apply)
+        }
+    }
+
+  # module.google_gke_gen.google_project_iam_member.gke_sa_iam_1 will be created
+  + resource "google_project_iam_member" "gke_sa_iam_1" {
+      + etag    = (known after apply)
+      + id      = (known after apply)
+      + member  = "serviceAccount:svacc-gke-ingest-0@playpen-7q9hns.iam.gserviceaccount.com"
+      + project = "playpen-7q9hns"
+      + role    = "roles/storage.objectAdmin"
+    }
+
+  # module.google_gke_gen.google_service_account.svacc-gke-ingest-0 will be created
+  + resource "google_service_account" "svacc-gke-ingest-0" {
+      + account_id   = "svacc-gke-ingest-0"
+      + disabled     = false
+      + display_name = "svacc-gke-ingest-0"
+      + email        = (known after apply)
+      + id           = (known after apply)
+      + name         = (known after apply)
+      + project      = (known after apply)
+      + unique_id    = (known after apply)
+    }
+
+  # module.google_gke_gen_workaround.google_project_iam_member.gke_sa_iam_2 will be created
+  + resource "google_project_iam_member" "gke_sa_iam_2" {
+      + etag    = (known after apply)
+      + id      = (known after apply)
+      + member  = "serviceAccount:svacc-gke-ingest-0@playpen-7q9hns.iam.gserviceaccount.com"
+      + project = "playpen-7q9hns"
+      + role    = "roles/artifactregistry.reader"
+    }
+
+  # module.google_gke_gpu.google_container_cluster.model_training will be created
+  + resource "google_container_cluster" "model_training" {
+      + cluster_ipv4_cidr           = (known after apply)
+      + datapath_provider           = (known after apply)
+      + default_max_pods_per_node   = (known after apply)
+      + enable_binary_authorization = false
+      + enable_intranode_visibility = (known after apply)
+      + enable_kubernetes_alpha     = false
+      + enable_legacy_abac          = false
+      + enable_shielded_nodes       = true
+      + endpoint                    = (known after apply)
+      + id                          = (known after apply)
+      + initial_node_count          = 1
+      + label_fingerprint           = (known after apply)
+      + location                    = "europe-west2-a"
+      + logging_service             = (known after apply)
+      + master_version              = (known after apply)
+      + min_master_version          = "1.22.12-gke.2300"
+      + monitoring_service          = (known after apply)
+      + name                        = "training-cluster-0"
+      + network                     = "nle-netwrk-0"
+      + networking_mode             = (known after apply)
+      + node_locations              = (known after apply)
+      + node_version                = (known after apply)
+      + operation                   = (known after apply)
+      + private_ipv6_google_access  = (known after apply)
+      + project                     = "playpen-7q9hns"
+      + remove_default_node_pool    = true
+      + self_link                   = (known after apply)
+      + services_ipv4_cidr          = (known after apply)
+      + subnetwork                  = "training-subnet-0"
+      + tpu_ipv4_cidr_block         = (known after apply)
+
+      + addons_config {
+          + cloudrun_config {
+              + disabled           = (known after apply)
+              + load_balancer_type = (known after apply)
+            }
+
+          + dns_cache_config {
+              + enabled = (known after apply)
+            }
+
+          + gce_persistent_disk_csi_driver_config {
+              + enabled = (known after apply)
+            }
+
+          + gcp_filestore_csi_driver_config {
+              + enabled = (known after apply)
+            }
+
+          + horizontal_pod_autoscaling {
+              + disabled = (known after apply)
+            }
+
+          + http_load_balancing {
+              + disabled = (known after apply)
+            }
+
+          + network_policy_config {
+              + disabled = (known after apply)
+            }
+        }
+
+      + authenticator_groups_config {
+          + security_group = (known after apply)
+        }
+
+      + cluster_autoscaling {
+          + enabled = (known after apply)
+
+          + auto_provisioning_defaults {
+              + boot_disk_kms_key = (known after apply)
+              + image_type        = (known after apply)
+              + oauth_scopes      = (known after apply)
+              + service_account   = (known after apply)
+            }
+
+          + resource_limits {
+              + maximum       = (known after apply)
+              + minimum       = (known after apply)
+              + resource_type = (known after apply)
+            }
+        }
+
+      + confidential_nodes {
+          + enabled = (known after apply)
+        }
+
+      + database_encryption {
+          + key_name = (known after apply)
+          + state    = (known after apply)
+        }
+
+      + default_snat_status {
+          + disabled = (known after apply)
+        }
+
+      + ip_allocation_policy {
+          + cluster_ipv4_cidr_block       = (known after apply)
+          + cluster_secondary_range_name  = (known after apply)
+          + services_ipv4_cidr_block      = (known after apply)
+          + services_secondary_range_name = (known after apply)
+        }
+
+      + logging_config {
+          + enable_components = (known after apply)
+        }
+
+      + master_auth {
+          + client_certificate     = (known after apply)
+          + client_key             = (sensitive value)
+          + cluster_ca_certificate = (known after apply)
+
+          + client_certificate_config {
+              + issue_client_certificate = (known after apply)
+            }
+        }
+
+      + mesh_certificates {
+          + enable_certificates = (known after apply)
+        }
+
+      + monitoring_config {
+          + enable_components = (known after apply)
+        }
+
+      + node_config {
+          + boot_disk_kms_key = (known after apply)
+          + disk_size_gb      = (known after apply)
+          + disk_type         = (known after apply)
+          + guest_accelerator = (known after apply)
+          + image_type        = (known after apply)
+          + labels            = (known after apply)
+          + local_ssd_count   = (known after apply)
+          + machine_type      = (known after apply)
+          + metadata          = (known after apply)
+          + min_cpu_platform  = (known after apply)
+          + node_group        = (known after apply)
+          + oauth_scopes      = (known after apply)
+          + preemptible       = (known after apply)
+          + service_account   = (known after apply)
+          + spot              = (known after apply)
+          + tags              = (known after apply)
+          + taint             = (known after apply)
+
+          + gcfs_config {
+              + enabled = (known after apply)
+            }
+
+          + gvnic {
+              + enabled = (known after apply)
+            }
+
+          + reservation_affinity {
+              + consume_reservation_type = (known after apply)
+              + key                      = (known after apply)
+              + values                   = (known after apply)
+            }
+
+          + shielded_instance_config {
+              + enable_integrity_monitoring = (known after apply)
+              + enable_secure_boot          = (known after apply)
+            }
+
+          + workload_metadata_config {
+              + mode = (known after apply)
+            }
+        }
+
+      + node_pool {
+          + initial_node_count          = (known after apply)
+          + instance_group_urls         = (known after apply)
+          + managed_instance_group_urls = (known after apply)
+          + max_pods_per_node           = (known after apply)
+          + name                        = (known after apply)
+          + name_prefix                 = (known after apply)
+          + node_count                  = (known after apply)
+          + node_locations              = (known after apply)
+          + version                     = (known after apply)
+
+          + autoscaling {
+              + location_policy      = (known after apply)
+              + max_node_count       = (known after apply)
+              + min_node_count       = (known after apply)
+              + total_max_node_count = (known after apply)
+              + total_min_node_count = (known after apply)
+            }
+
+          + management {
+              + auto_repair  = (known after apply)
+              + auto_upgrade = (known after apply)
+            }
+
+          + node_config {
+              + boot_disk_kms_key = (known after apply)
+              + disk_size_gb      = (known after apply)
+              + disk_type         = (known after apply)
+              + guest_accelerator = (known after apply)
+              + image_type        = (known after apply)
+              + labels            = (known after apply)
+              + local_ssd_count   = (known after apply)
+              + machine_type      = (known after apply)
+              + metadata          = (known after apply)
+              + min_cpu_platform  = (known after apply)
+              + node_group        = (known after apply)
+              + oauth_scopes      = (known after apply)
+              + preemptible       = (known after apply)
+              + service_account   = (known after apply)
+              + spot              = (known after apply)
+              + tags              = (known after apply)
+              + taint             = (known after apply)
+
+              + gcfs_config {
+                  + enabled = (known after apply)
+                }
+
+              + gvnic {
+                  + enabled = (known after apply)
+                }
+
+              + reservation_affinity {
+                  + consume_reservation_type = (known after apply)
+                  + key                      = (known after apply)
+                  + values                   = (known after apply)
+                }
+
+              + shielded_instance_config {
+                  + enable_integrity_monitoring = (known after apply)
+                  + enable_secure_boot          = (known after apply)
+                }
+
+              + workload_metadata_config {
+                  + mode = (known after apply)
+                }
+            }
+
+          + upgrade_settings {
+              + max_surge       = (known after apply)
+              + max_unavailable = (known after apply)
+            }
+        }
+
+      + notification_config {
+          + pubsub {
+              + enabled = (known after apply)
+              + topic   = (known after apply)
+            }
+        }
+
+      + private_cluster_config {
+          + enable_private_nodes   = true
+          + master_ipv4_cidr_block = "173.16.0.0/28"
+          + peering_name           = (known after apply)
+          + private_endpoint       = (known after apply)
+          + public_endpoint        = (known after apply)
+
+          + master_global_access_config {
+              + enabled = (known after apply)
+            }
+        }
+
+      + release_channel {
+          + channel = (known after apply)
+        }
+
+      + service_external_ips_config {
+          + enabled = (known after apply)
+        }
+
+      + vertical_pod_autoscaling {
+          + enabled = (known after apply)
+        }
+
+      + workload_identity_config {
+          + workload_pool = (known after apply)
+        }
+    }
+
+  # module.google_gke_gpu.google_container_node_pool.model_training_nodes will be created
+  + resource "google_container_node_pool" "model_training_nodes" {
+      + cluster                     = "training-cluster-0"
+      + id                          = (known after apply)
+      + initial_node_count          = (known after apply)
+      + instance_group_urls         = (known after apply)
+      + location                    = "europe-west2-a"
+      + managed_instance_group_urls = (known after apply)
+      + max_pods_per_node           = (known after apply)
+      + name                        = "training-node-0"
+      + name_prefix                 = (known after apply)
+      + node_count                  = 1
+      + node_locations              = (known after apply)
+      + operation                   = (known after apply)
+      + project                     = (known after apply)
+      + version                     = (known after apply)
+
+      + management {
+          + auto_repair  = (known after apply)
+          + auto_upgrade = (known after apply)
+        }
+
+      + node_config {
+          + disk_size_gb      = (known after apply)
+          + disk_type         = (known after apply)
+          + guest_accelerator = [
+              + {
+                  + count              = 1
+                  + gpu_partition_size = null
+                  + type               = "nvidia-tesla-t4"
+                },
+            ]
+          + image_type        = "COS"
+          + labels            = (known after apply)
+          + local_ssd_count   = (known after apply)
+          + machine_type      = "n1-standard-4"
+          + metadata          = (known after apply)
+          + min_cpu_platform  = (known after apply)
+          + oauth_scopes      = [
+              + "https://www.googleapis.com/auth/cloud-platform",
+            ]
+          + preemptible       = false
+          + service_account   = (known after apply)
+          + spot              = false
+          + taint             = (known after apply)
+
+          + shielded_instance_config {
+              + enable_integrity_monitoring = (known after apply)
+              + enable_secure_boot          = (known after apply)
+            }
+
+          + workload_metadata_config {
+              + mode = (known after apply)
+            }
+        }
+
+      + upgrade_settings {
+          + max_surge       = (known after apply)
+          + max_unavailable = (known after apply)
+        }
+    }
+
+  # module.google_gke_gpu.google_project_iam_binding.artifact-registry-reader-binding will be created
+  + resource "google_project_iam_binding" "artifact-registry-reader-binding" {
+      + etag    = (known after apply)
+      + id      = (known after apply)
+      + members = [
+          + "serviceAccount:svacc-gke-train-0@playpen-7q9hns.iam.gserviceaccount.com",
+        ]
+      + project = "playpen-7q9hns"
+      + role    = "roles/artifactregistry.reader"
+    }
+
+  # module.google_gke_gpu.google_service_account.svacc-gke-train-0 will be created
+  + resource "google_service_account" "svacc-gke-train-0" {
+      + account_id   = "svacc-gke-train-0"
+      + disabled     = false
+      + display_name = "svacc-gke-train-0"
+      + email        = (known after apply)
+      + id           = (known after apply)
+      + name         = (known after apply)
+      + project      = (known after apply)
+      + unique_id    = (known after apply)
+    }
+
+  # module.google_global_cloud_storage.google_storage_bucket.datalake-ingest-landing will be created
+  + resource "google_storage_bucket" "datalake-ingest-landing" {
+      + force_destroy               = true
+      + id                          = (known after apply)
+      + location                    = "EUROPE-WEST2"
+      + name                        = "datalake-ingest-landing"
+      + project                     = (known after apply)
+      + self_link                   = (known after apply)
+      + storage_class               = "STANDARD"
+      + uniform_bucket_level_access = true
+      + url                         = (known after apply)
+
+      + lifecycle_rule {
+          + action {
+              + storage_class = "NEARLINE"
+              + type          = "SetStorageClass"
+            }
+
+          + condition {
+              + age                   = 45
+              + matches_prefix        = []
+              + matches_storage_class = []
+              + matches_suffix        = []
+              + with_state            = (known after apply)
+            }
+        }
+
+      + timeouts {
+          + create = "60m"
+        }
+    }
+
+  # module.google_global_cloud_storage.google_storage_bucket.datalake-transcribed will be created
+  + resource "google_storage_bucket" "datalake-transcribed" {
+      + force_destroy               = true
+      + id                          = (known after apply)
+      + location                    = "EUROPE-WEST2"
+      + name                        = "datalake-transcribed"
+      + project                     = (known after apply)
+      + self_link                   = (known after apply)
+      + storage_class               = "STANDARD"
+      + uniform_bucket_level_access = true
+      + url                         = (known after apply)
+
+      + lifecycle_rule {
+          + action {
+              + storage_class = "NEARLINE"
+              + type          = "SetStorageClass"
+            }
+
+          + condition {
+              + age                   = 45
+              + matches_prefix        = []
+              + matches_storage_class = []
+              + matches_suffix        = []
+              + with_state            = (known after apply)
+            }
+        }
+
+      + timeouts {
+          + create = "60m"
+        }
+    }
+
+  # module.google_networks.google_compute_network.vpc_network will be created
+  + resource "google_compute_network" "vpc_network" {
+      + auto_create_subnetworks         = false
+      + delete_default_routes_on_create = true
+      + enable_ula_internal_ipv6        = false
+      + gateway_ipv4                    = (known after apply)
+      + id                              = (known after apply)
+      + internal_ipv6_range             = (known after apply)
+      + mtu                             = 1460
+      + name                            = "nle-netwrk-0"
+      + project                         = "playpen-7q9hns"
+      + routing_mode                    = "REGIONAL"
+      + self_link                       = (known after apply)
+    }
+
+  # module.google_networks.google_compute_route.default-route-inet will be created
+  + resource "google_compute_route" "default-route-inet" {
+      + description            = "Default route to the Internet."
+      + dest_range             = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + name                   = "default-route-inet"
+      + network                = "nle-netwrk-0"
+      + next_hop_gateway       = "default-internet-gateway"
+      + next_hop_instance_zone = (known after apply)
+      + next_hop_ip            = (known after apply)
+      + next_hop_network       = (known after apply)
+      + priority               = 1000
+      + project                = "playpen-7q9hns"
+      + self_link              = (known after apply)
+    }
+
+  # module.google_networks.google_compute_subnetwork.vpc_network_subnet will be created
+  + resource "google_compute_subnetwork" "vpc_network_subnet" {
+      + creation_timestamp         = (known after apply)
+      + external_ipv6_prefix       = (known after apply)
+      + fingerprint                = (known after apply)
+      + gateway_address            = (known after apply)
+      + id                         = (known after apply)
+      + ip_cidr_range              = "10.2.204.0/22"
+      + ipv6_cidr_range            = (known after apply)
+      + name                       = "ingest-subnet-0"
+      + network                    = "nle-netwrk-0"
+      + private_ip_google_access   = true
+      + private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS"
+      + project                    = "playpen-7q9hns"
+      + purpose                    = "PRIVATE"
+      + region                     = "europe-west2"
+      + secondary_ip_range         = (known after apply)
+      + self_link                  = (known after apply)
+      + stack_type                 = "IPV4_ONLY"
+    }
+
+  # module.google_networks.google_compute_subnetwork.vpc_network_subnet_gpu will be created
+  + resource "google_compute_subnetwork" "vpc_network_subnet_gpu" {
+      + creation_timestamp         = (known after apply)
+      + external_ipv6_prefix       = (known after apply)
+      + fingerprint                = (known after apply)
+      + gateway_address            = (known after apply)
+      + id                         = (known after apply)
+      + ip_cidr_range              = "10.3.204.0/22"
+      + ipv6_cidr_range            = (known after apply)
+      + name                       = "training-subnet-0"
+      + network                    = "nle-netwrk-0"
+      + private_ip_google_access   = true
+      + private_ipv6_google_access = "DISABLE_GOOGLE_ACCESS"
+      + project                    = "playpen-7q9hns"
+      + purpose                    = "PRIVATE"
+      + region                     = "europe-west2"
+      + secondary_ip_range         = (known after apply)
+      + self_link                  = (known after apply)
+      + stack_type                 = "IPV4_ONLY"
+    }
+
+Plan: 20 to add, 0 to change, 0 to destroy.
+
